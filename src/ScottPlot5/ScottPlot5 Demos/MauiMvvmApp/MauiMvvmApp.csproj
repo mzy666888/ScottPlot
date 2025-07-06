@@ -68,8 +68,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\ScottPlot5 Controls\ScottPlot.MauiMvvm\ScottPlot.MauiMvvm.csproj" />
-	  <ProjectReference Include="..\ScottPlot5 Controls\ScottPlot.Maui\ScottPlot.Maui.csproj" />
+	  <ProjectReference Include="..\..\ScottPlot5 Controls\ScottPlot.MauiMvvm\ScottPlot.MauiMvvm.csproj" />
 	</ItemGroup>
 
 </Project>

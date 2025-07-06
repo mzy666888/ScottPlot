@@ -8,11 +8,6 @@ namespace MauiMvvmApp
         {
             InitializeComponent();
             this.BindingContext = new MainPageViewModel();
-            double[] dataX = { 1, 2, 3, 4, 5 };
-            double[] dataY = { 1, 4, 9, 16, 25 };
-            MyOriginPlot.Plot.Add.Scatter(dataX, dataY);
-
-            MyOriginPlot.Refresh();
         }
 
         private void OnCounterClicked(object? sender, EventArgs e)
