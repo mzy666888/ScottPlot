@@ -19,8 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{6500EB02-9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinForms Demo", "ScottPlot5 Demos\ScottPlot5 WinForms Demo\WinForms Demo.csproj", "{B8430DC2-421A-4688-99CC-ABDBF983F925}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScottPlot Cookbook", "ScottPlot5 Cookbook\ScottPlot Cookbook.csproj", "{15FA3B6F-9541-4A72-B453-838F48D9C852}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScottPlot.WinUI", "ScottPlot5 Controls\ScottPlot.WinUI\ScottPlot.WinUI.csproj", "{F2C622DE-1D3D-4027-9009-5FB02428856E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScottPlot.OpenGL", "ScottPlot5 Controls\ScottPlot.OpenGL\ScottPlot.OpenGL.csproj", "{F0DE5518-62CD-4E20-A5E6-670AE7B17AF9}"
@@ -34,8 +32,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Advanced Tests", "Advanced Tests", "{B0708928-FFD3-4062-A3AD-3BA9D7CD8A55}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graphical Test Runner", "ScottPlot5 Tests\Graphical Test Runner\Graphical Test Runner.csproj", "{AA39141A-E248-43FB-ABF4-92D7E94F6190}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScottPlot Unit Tests", "ScottPlot5 Tests\Unit Tests\ScottPlot Unit Tests.csproj", "{6CED419A-A9F9-4200-80A7-A38AE1295F0A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScottPlot.Maui", "ScottPlot5 Controls\ScottPlot.Maui\ScottPlot.Maui.csproj", "{8635283C-4CA6-4C35-A3A7-39DFDD7A6196}"
 EndProject
@@ -74,6 +70,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dev", "Dev", "{8EC462FD-D22
 		..\..\CHANGELOG.md = ..\..\CHANGELOG.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScottPlot.MauiMvvm", "ScottPlot5 Controls\ScottPlot.MauiMvvm\ScottPlot.MauiMvvm.csproj", "{6781E038-7C85-C40F-3613-649E0E068E62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiMvvmApp", "ScottPlot5 Demos\MauiMvvmApp\MauiMvvmApp.csproj", "{AFB58414-6D5B-CA3A-BCF8-FE0A1C9CD9B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,10 +104,6 @@ Global
 		{B8430DC2-421A-4688-99CC-ABDBF983F925}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8430DC2-421A-4688-99CC-ABDBF983F925}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8430DC2-421A-4688-99CC-ABDBF983F925}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15FA3B6F-9541-4A72-B453-838F48D9C852}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15FA3B6F-9541-4A72-B453-838F48D9C852}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15FA3B6F-9541-4A72-B453-838F48D9C852}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15FA3B6F-9541-4A72-B453-838F48D9C852}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F2C622DE-1D3D-4027-9009-5FB02428856E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F2C622DE-1D3D-4027-9009-5FB02428856E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2C622DE-1D3D-4027-9009-5FB02428856E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -132,10 +128,6 @@ Global
 		{AA39141A-E248-43FB-ABF4-92D7E94F6190}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA39141A-E248-43FB-ABF4-92D7E94F6190}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA39141A-E248-43FB-ABF4-92D7E94F6190}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6CED419A-A9F9-4200-80A7-A38AE1295F0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CED419A-A9F9-4200-80A7-A38AE1295F0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6CED419A-A9F9-4200-80A7-A38AE1295F0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CED419A-A9F9-4200-80A7-A38AE1295F0A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8635283C-4CA6-4C35-A3A7-39DFDD7A6196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8635283C-4CA6-4C35-A3A7-39DFDD7A6196}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8635283C-4CA6-4C35-A3A7-39DFDD7A6196}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -173,6 +165,16 @@ Global
 		{C1E912A4-2541-4BC4-B6E6-4FE611F56B13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1E912A4-2541-4BC4-B6E6-4FE611F56B13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1E912A4-2541-4BC4-B6E6-4FE611F56B13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6781E038-7C85-C40F-3613-649E0E068E62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6781E038-7C85-C40F-3613-649E0E068E62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6781E038-7C85-C40F-3613-649E0E068E62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6781E038-7C85-C40F-3613-649E0E068E62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFB58414-6D5B-CA3A-BCF8-FE0A1C9CD9B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFB58414-6D5B-CA3A-BCF8-FE0A1C9CD9B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFB58414-6D5B-CA3A-BCF8-FE0A1C9CD9B4}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{AFB58414-6D5B-CA3A-BCF8-FE0A1C9CD9B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFB58414-6D5B-CA3A-BCF8-FE0A1C9CD9B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFB58414-6D5B-CA3A-BCF8-FE0A1C9CD9B4}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -204,6 +206,8 @@ Global
 		{9648FD23-5093-49BF-ACD1-B2173A7DF856} = {FE2AD947-D789-4A89-94CF-CFA5252E0579}
 		{C162BB66-53C7-468D-A643-FBB7A606D2F7} = {6500EB02-9E5D-4FDF-AAEC-84B831B4E396}
 		{C1E912A4-2541-4BC4-B6E6-4FE611F56B13} = {6500EB02-9E5D-4FDF-AAEC-84B831B4E396}
+		{6781E038-7C85-C40F-3613-649E0E068E62} = {957BAA80-422B-4231-BEC1-D03FD89425A2}
+		{AFB58414-6D5B-CA3A-BCF8-FE0A1C9CD9B4} = {6500EB02-9E5D-4FDF-AAEC-84B831B4E396}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FBAE082A-173A-4F13-BE31-E6C070513C9C}
