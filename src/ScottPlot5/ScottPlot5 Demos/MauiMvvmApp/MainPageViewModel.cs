@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ScottPlot;
+using ScottPlot.MauiMvvm;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,6 +30,13 @@ internal partial class MainPageViewModel:ObservableObject
     private void Click()
     {
         Title = $"Clicked at {DateTime.Now:HH:mm:ss}";
+    }
+    [RelayCommand]
+    private void AddPoint()
+    {
+        DataX.Add(DataX.Count + 1);
+        DataY.Add(Random.Shared.Next(0,50));
+        MyPlot.Refresh();
     }
 
 }

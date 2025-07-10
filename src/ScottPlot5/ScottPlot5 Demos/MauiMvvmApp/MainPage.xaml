@@ -32,6 +32,11 @@
                 HorizontalOptions="Fill"
                 SemanticProperties.Hint="Counts the number of times you click"
                 Text="Click me" />
+            <Button
+                Command="{Binding AddPointCommand}"
+                HorizontalOptions="Fill"
+                SemanticProperties.Hint="Counts the number of times you click"
+                Text="Add Point" />
             <HorizontalStackLayout>
                 <plot:MauiMvvmPlot
                     HeightRequest="400"
