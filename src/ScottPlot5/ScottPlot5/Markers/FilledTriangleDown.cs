@@ -2,7 +2,7 @@ namespace ScottPlot.Markers;
 
 internal class FilledTriangleDown : IMarker
 {
-    public void Render(SKCanvas canvas, SKPaint paint, Pixel center, float size, MarkerStyle markerStyle)
+    public void Render(SKCanvas canvas, Paint paint, Pixel center, float size, MarkerStyle markerStyle)
     {
         // Length of each side of triangle = size
         float radius = (float)(size / 1.732); // size / sqrt(3)
@@ -21,7 +21,7 @@ internal class FilledTriangleDown : IMarker
         path.AddPoly(pointsList);
 
         PixelRect rect = new(center, radius);
-        Drawing.DrawPath(canvas, paint, path, markerStyle.FillStyle, rect);
+        Drawing.FillPath(canvas, paint, path, markerStyle.FillStyle, rect);
         Drawing.DrawPath(canvas, paint, path, markerStyle.OutlineStyle);
     }
 }

@@ -22,6 +22,11 @@ public interface IMultiplot
     public MultiplotSharedAxisManager SharedAxes { get; }
 
     /// <summary>
+    /// Actions invoked before each render to coordinate shared state between subplots.
+    /// </summary>
+    public List<IMultiplotPreRenderAction> PreRenderActions { get; }
+
+    /// <summary>
     /// Render this multiplot onto the given canvas using a layout
     /// created to fit inside the given rectangle.
     /// </summary>
@@ -65,7 +70,7 @@ public static class IMultiplotExtensions
     /// </summary>
     public static void Render(this IMultiplot multiplot, SKSurface surface)
     {
-        multiplot.Render(surface.Canvas, surface.Canvas.LocalClipBounds.ToPixelRect());
+        multiplot.Render(surface.Canvas, surface.Canvas.DeviceClipBounds.ToPixelRect());
     }
 
     /// <summary>

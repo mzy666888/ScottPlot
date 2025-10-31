@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <!-- targets must be in this order for the control to appear in the toolbox -->
-        <TargetFrameworks>net6.0-windows;net462</TargetFrameworks>
+        <TargetFrameworks>net8.0-windows;net462</TargetFrameworks>
         <Nullable>enable</Nullable>
         <UseWindowsForms>true</UseWindowsForms>
         <ImplicitUsings>disable</ImplicitUsings>
@@ -13,7 +13,7 @@
 
         <!-- NuGet info -->
         <PackageId>ScottPlot.WinForms</PackageId>
-        <Version>5.0.55</Version>
+        <Version>5.1.58</Version>
         <Authors>Scott Harden</Authors>
         <Company>Harden Technologies, LLC</Company>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -37,7 +37,7 @@
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 
         <NoWarn>NU1701, CS1591, CS1587, CS1573, CS1572, CS1570, CS1574, CS1584</NoWarn>
-        
+
     </PropertyGroup>
 
     <!-- Include additional files for the NuGet package -->
@@ -52,7 +52,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="SkiaSharp.Views.WindowsForms" Version="2.88.9" />
+        <PackageReference Include="SkiaSharp.Views.WindowsForms" Version="3.119.0" />
         <ProjectReference Include="..\..\ScottPlot5\ScottPlot.csproj" />
     </ItemGroup>
 

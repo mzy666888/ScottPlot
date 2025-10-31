@@ -1,5 +1,24 @@
+## ScottPlot 5.1.57
+_Published on [NuGet](https://www.nuget.org/profiles/ScottPlot) on 2025-10-11_
+* The transition from ScottPlot `5.0` to `5.1` has breaking changes which are likely to affect advanced users who maintain custom plot types. Upgrading our SkiaSharp from `2.88` to `3.119` brought many improvements, but significantly changed the functionality of `SkiaSharp.SKPaint` which many of our drawing operations relied on. To minimize the impact of this change, references to `SkiaSharp.SKPaint` have been replaced with `ScottPlot.Paint` which closely resembles the original API, minimizing amount of code changes required to upgrade. This version aims at making this upgrade possible, and future versions will refine these objects to improve performance and minimize allocations.
+* Public methods that accepted `SkiaSharp.SKPaint` now accept `ScottPlot.Paint`
+* `Paint.MeasureText()` now returns a single `PixelRect` instead of using `out` variables
+* Rendering: Significantly reduced the number of allocations by passing `Paint` throughout the render flow
+* NuGet: Bundle all third party license and copyright notices into a single file included in the NuGet package (#5068, #5075) @jelhan, @bclehmann
+* Colormaps: Updated the Turbo colormap to use the identical color table published by the original author (#5075) @bclehmann
+* Interactive Plottables: Created a new collection of interactive plottables which do not require manually wiring mouse events to support hover and click-drag manipulation
+* Controls: Added `SetCursor()` functionality to `IPlotControl` to improve cross-platform support for mouse interactions
+* SignalXY: Reduced heap allocations by modifying `ISignalXYSource` to use `IReadOnlyList<Pixel>` instead of `Pixel[]` (#5091, #5078) @bclehmann
+* Palette: Added `Invert()` and `InvertHue()` to `IPalette` so palettes for light backgrounds can be reused for dark backgrounds (#5094) @NeilMacMullen
+* Colormap: Added `Invert()` and `InvertHue()` to `IPalette` so palettes for light backgrounds can be reused for dark backgrounds (#5094) @NeilMacMullen
+* Palettes: Added a `ColorblindFriendlyDark` palette to improve accessibility of categorical plots with dark backgrounds (#5094) @NeilMacMullen
+* Multiplot: Added a collection of `PreRenderActions` to facilitate synchronization of data between subplots (#5095) @NeilMacMullen
+* Histogram: Optimized bin count accumulation strategy to improve performance when creating histograms (#5102) @fissssssh
+* Legend: Added support for defining an `Index` so manually added items can be displayed in preferred sequence (#5107) @timmer98
+* Avalonia: Improve behavior through focus release and acquisition cycles (#5109, #5105) @nbeck-SMT
+
 ## ScottPlot 5.0.56
-_Not yet on NuGet..._
+_Published on [NuGet](https://www.nuget.org/profiles/ScottPlot) on 2025-08-22_
 * Statistics: Added support for kernel density estimation with Epanechnikov, Gaussian, Uniform, and Triangular strategies. Scott's rule (no relation) was implemented for bandwidth estimation (#4869) @bclehmann
 * Radar: Added a `IsAxisAboveData` property to allow the axes to be rendered on top of the data series (#4874) @Christoph-Wagner
 * Scatter: Add support for vertically oriented gradient fills (#4881) @manaruto
@@ -7,6 +26,36 @@ _Not yet on NuGet..._
 * PolarAxis: Add support for custom background color (#4897) @CoderPM2011
 * PolarAxis: Added support for custom spoke lengths (#4897) @CoderPM2011
 * Axes: Improve automatic DateTime tick generation for inverted axes (#4900, #4851) @manaruto @sunwayking
+* Ticks: Improve behavior of DateTime ticks for plots with zero-sized axes (#4911, #4903) @NeilMacMullen @mccabe93
+* Horizontal and Vertical Line: Improve support for inverted axes (#4920) @manaruto
+* Rendering: Improve support for invisible and zero line width rectangles (#4956) @Fruchtzwerg94
+* Font: Fixed `Font.Set()` issue associated with premature typeface disposal (#4910, #4958) @sproott @237779932
+* WinUI: Improve support for modifier keys when combining mouse and keyboard inputs (#4967, #4970) @diluculo
+* Markers: Added new `OpenCircleWithDot`, `OpenCircleWithCross`, and `OpenCircleWithEks` markers (#4963, #4972) @CoderPM2011
+* NumericConversion: Added type-specific `Clamp()` overloads prevent boxing and improve performance (#4985) @kevin100702
+* Maui: Add explicit `net8.0` target to facilitate platform-agnostic unit testing (#4988) @Adam--
+* Drawing: Add `FillPath()` and `FillCircle()` and deprecate draw overloads that accept a `FillStyle` (#4987) @CoderPM2011
+* GitHub: Create a `devconainer.json` file to facilitate development in GitHub Codespaces (#5002) @oxygen-dioxide
+* Maui: Improve behavior for interactive plots when their user input processor is disabled (#4990, #4989) @Adam--
+* Fonts: Added new styling options for weight, slant, density, etc. (#5013, #4873) @aespitia @Christoph-Wagner
+* Labels: Added styling options for underline with customizable thickness and offset (#4893) @manaruto
+* Legend: Added the ability to customize default marker shape for legend items (#5005, #5006) @aespitia
+* Pie: Added a `Radius` property (instead of forcing `1.0`) and improved rendering and SVG export (#5020) @CoderPM2011 @aespitia
+* Data Streamer: Added `FillY` and related properties so streaming plots support filled ares (#4948, #5023) @manaruto @Stephanowicz
+* Plot: Added `FigureBorder` and `DataBorder` for displaying custom borders on plots and subplots (#4854, #5024) @CoderPM2011
+* Angle: Added `Inverted` property and support for `Angle` comparison using equality operators
+* Polar Axis: Added a `Clockwise` property to support clockwise and counter-clockwise translation between Polar and Cartesian coordinates (#5028, #4884, #5046) @CoderPM2011, @mattwelch2000
+* WinUI: Improved support for plots with transparent backgrounds (#5026, #5029) @diluculo
+* Font: Added `Fonts.Reset()` to restore default styling options (#5013) @aespitia
+* Legend: Respect marker size when a default marker shape is used (#5006, #5031) @manaruto @aespitia 
+* Legend: Improve appearance of large markers in legends (#4999, #5031, #5056) @manaruto @winsrp
+* Cookbook: Improve developer experience when generating images using the Visual Studio Test Runner (#4882, #5032) @CoderPM2011
+* Signal: Improve horizontal range accuracy reported by signal plot data sources (#4868, #5033) @CoderPM2011, @dirk-de-bugger, @StendProg
+* Heatmap: Added a `RenderStrategy` property so users can use custom rendering logic (#5035) @bclehmann
+* Heatmap: Added `Heatmap.RenderStrategies.Rectangles` to improve SVG support by drawing each cell of a heatmap as a distinct rectangle (#4950, #5020, #5035) @CoderPM2011 @bclehmann @MRC-Karel
+* Color: Added an `Opacity` property to compliment `WithOpacity()` which represents opacity as a fractional value (#5041, #5024) @aespitia, @bclehmann
+* Axis Line: Improve alignment of horizontal line labels on the right side of multi-axis plots (#5052) @afunc233
+* Avalonia: Forward `OnLostFocus` events to improve mouse/keyboard interactivity following alt+tab window switching (#5053) @afunc233
 
 ## ScottPlot 5.0.55
 _Published on [NuGet](https://www.nuget.org/profiles/ScottPlot) on 2025-03-22_

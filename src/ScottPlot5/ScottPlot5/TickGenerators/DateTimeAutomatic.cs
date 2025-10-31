@@ -63,9 +63,9 @@ public class DateTimeAutomatic : IDateTimeTickGenerator
         return null;
     }
 
-    public void Regenerate(CoordinateRange range, Edge edge, PixelLength size, SKPaint paint, LabelStyle labelStyle)
+    public void Regenerate(CoordinateRange range, Edge edge, PixelLength size, Paint paint, LabelStyle labelStyle)
     {
-        if (range.Length >= TimeSpan.MaxValue.Days || double.IsNaN(range.Length) || double.IsInfinity(range.Length))
+        if (range.Length >= TimeSpan.MaxValue.Days || double.IsNaN(range.Length) || double.IsInfinity(range.Length) || (size.Length <= 0))
         {
             // cases of extreme zoom (10,000 years)
             Ticks = [];
@@ -125,7 +125,7 @@ public class DateTimeAutomatic : IDateTimeTickGenerator
     /// If all labels fit within the bounds, the list of ticks is returned.
     /// If a label doesn't fit in the bounds, the list is null and the size of the large tick label is returned.
     /// </summary>
-    private (List<Tick>? Positions, PixelSize? PixelSize) GenerateTicks(CoordinateRange range, ITimeUnit unit, int increment, PixelSize tickLabelBounds, SKPaint paint, LabelStyle labelStyle)
+    private (List<Tick>? Positions, PixelSize? PixelSize) GenerateTicks(CoordinateRange range, ITimeUnit unit, int increment, PixelSize tickLabelBounds, Paint paint, LabelStyle labelStyle)
     {
         DateTime rangeMin = NumericConversion.ToDateTime(range.Min);
         DateTime rangeMax = NumericConversion.ToDateTime(range.Max);
@@ -137,9 +137,18 @@ public class DateTimeAutomatic : IDateTimeTickGenerator
 
         List<Tick> ticks = [];
 
+        // if the increment is 0 or negative, something has gone wrong further up but bail out now.
+        // Also check that unit.Next is actually going to move us forward... otherwise we could loop forever
+        if (increment <= 0 || (unit.Next(start, increment) <= start))
+            return (ticks, null);
+
         const int maxTickCount = 1000;
         for (DateTime dt = start; dt <= rangeMax; dt = unit.Next(dt, increment))
         {
+            //this test is dangerous because it can cause an infinite loop if dt is not
+            //advancing.  It might be better to initialize dt to Max(start,rangeMin) but I'm guessing the#
+            //intentions of having this here is to allow the "pre-roll" to advance so that the first
+            //tick is beyond rangeMin ?
             if (dt < rangeMin)
                 continue;
 

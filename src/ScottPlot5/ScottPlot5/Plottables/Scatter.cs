@@ -145,7 +145,6 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
             _ => throw new NotImplementedException($"unsupported {nameof(ConnectStyle)}: {ConnectStyle}"),
         };
 
-        using SKPaint paint = new();
         using SKPath path = PathStrategy.GetPath(linePixels);
 
         if (FillY)
@@ -177,7 +176,7 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
                     rp.CanvasState.Save();
                     rp.CanvasState.Clip(rectAbove);
                     fs.Color = ColorPositions.Count > 0 ? Colors.Black : FillYAboveColor;
-                    Drawing.DrawPath(rp.Canvas, paint, fillPath, fs, rectAbove);
+                    Drawing.FillPath(rp.Canvas, rp.Paint, fillPath, fs, rectAbove);
                     rp.CanvasState.Restore();
                 }
 
@@ -187,7 +186,7 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
                     rp.CanvasState.Save();
                     rp.CanvasState.Clip(rectBelow);
                     fs.Color = ColorPositions.Count > 0 ? Colors.Black : FillYBelowColor;
-                    Drawing.DrawPath(rp.Canvas, paint, fillPath, fs, rectBelow);
+                    Drawing.FillPath(rp.Canvas, rp.Paint, fillPath, fs, rectBelow);
                     rp.CanvasState.Restore();
                 }
             }
@@ -197,13 +196,13 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
                 rp.CanvasState.Save();
                 rp.CanvasState.Clip(fullRect);
                 fs.Color = ColorPositions.Count > 0 ? Colors.Black : FillYColor;
-                Drawing.DrawPath(rp.Canvas, paint, fillPath, fs, fullRect);
+                Drawing.FillPath(rp.Canvas, rp.Paint, fillPath, fs, fullRect);
                 rp.CanvasState.Restore();
             }
         }
 
-        Drawing.DrawLines(rp.Canvas, paint, path, LineStyle);
-        Drawing.DrawMarkers(rp.Canvas, paint, markerPixels, MarkerStyle);
+        Drawing.DrawLines(rp.Canvas, rp.Paint, path, LineStyle);
+        Drawing.DrawMarkers(rp.Canvas, rp.Paint, markerPixels, MarkerStyle);
     }
 
     /// <summary>
@@ -212,7 +211,7 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
     /// </summary>
     /// <param name="points">Array of corner positions</param>
     /// <param name="right">Indicates that a line will extend to the right before rising or falling.</param>
-    public static Pixel[] GetStepDisplayPixels(Pixel[] pixels, bool right)
+    public static Pixel[] GetStepDisplayPixels(IReadOnlyList<Pixel> pixels, bool right)
     {
         Pixel[] pixelsStep = new Pixel[pixels.Count() * 2 - 1];
 
@@ -225,7 +224,7 @@ public class Scatter(IScatterSource data) : IPlottable, IHasLine, IHasMarker, IH
             pixelsStep[i * 2 + 1] = new Pixel(pixels[i + offsetX].X, pixels[i + offsetY].Y);
         }
 
-        pixelsStep[pixelsStep.Length - 1] = pixels[pixels.Length - 1];
+        pixelsStep[pixelsStep.Length - 1] = pixels[pixels.Count - 1];
 
         return pixelsStep;
     }

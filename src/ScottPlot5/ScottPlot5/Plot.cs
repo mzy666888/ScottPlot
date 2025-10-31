@@ -23,6 +23,9 @@ public class Plot : IDisposable
     /// </summary>
     public BackgroundStyle DataBackground = new() { Color = Colors.Transparent };
 
+    public LineStyle FigureBorder { get; set; } = LineStyle.None;
+    public LineStyle DataBorder { get; set; } = LineStyle.None;
+
     public IZoomRectangle ZoomRectangle { get; set; }
     public double ScaleFactor { get => ScaleFactorF; set => ScaleFactorF = (float)value; }
     internal float ScaleFactorF { get; private set; } = 1.0f;
@@ -194,6 +197,7 @@ public class Plot : IDisposable
     public IPanel? GetPanel(Pixel pixel, bool axesOnly)
     {
         PixelRect dataRect = RenderManager.LastRender.Layout.DataRect;
+        using Paint paint = Paint.NewDisposablePaint();
 
         // Reverse here so the "highest" axis is returned in the case some overlap.
         var panels = axesOnly
@@ -204,7 +208,7 @@ public class Plot : IDisposable
         {
             float axisPanelSize = RenderManager.LastRender.Layout.PanelSizes[panel];
             float axisPanelOffset = RenderManager.LastRender.Layout.PanelOffsets[panel];
-            PixelRect axisRect = panel.GetPanelRect(dataRect, axisPanelSize, axisPanelOffset);
+            PixelRect axisRect = panel.GetPanelRect(dataRect, axisPanelSize, axisPanelOffset, paint);
             if (axisRect.Contains(pixel))
             {
                 return panel;
@@ -213,6 +217,27 @@ public class Plot : IDisposable
 
         return null;
     }
+
+    #endregion
+
+    #region Interactivity
+
+    public InteractiveHandle? GetInteractiveHandle(float xPixel, float yPixel, float radius = 10, IXAxis? xAxis = null, IYAxis? yAxis = null)
+    {
+        CoordinateRect rect = GetCoordinateRect(xPixel, yPixel, radius, xAxis, yAxis);
+        foreach (var p in PlottableList.OfType<IHasInteractiveHandles>().Reverse())
+        {
+            InteractiveHandle? handle = p.GetHandle(rect);
+            if (handle is not null)
+                return handle;
+        }
+        return null;
+    }
+
+    public EventHandler<InteractiveHandle?>? HandleHoverChanged { get; set; }
+    public EventHandler<InteractiveHandle>? HandlePressed { get; set; }
+    public EventHandler<InteractiveHandle>? HandleMoved { get; set; }
+    public EventHandler<InteractiveHandle>? HandleReleased { get; set; }
 
     #endregion
 
@@ -253,7 +278,7 @@ public class Plot : IDisposable
     /// </summary>
     public void Render(SKSurface surface)
     {
-        RenderManager.Render(surface.Canvas, surface.Canvas.LocalClipBounds.ToPixelRect());
+        Render(surface.Canvas, surface.Canvas.LocalClipBounds.ToPixelRect());
     }
 
     public Image GetImage(int width, int height)

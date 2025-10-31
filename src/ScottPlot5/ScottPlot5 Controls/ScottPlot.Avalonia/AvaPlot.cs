@@ -8,6 +8,7 @@ using Avalonia.Threading;
 using SkiaSharp;
 
 using Controls = Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace ScottPlot.Avalonia;
 
@@ -142,10 +143,21 @@ public class AvaPlot : Controls.Control, IPlotControl
         UserInputProcessor.ProcessKeyUp(e);
     }
 
+    protected override void OnLostFocus(RoutedEventArgs e)
+    {
+        base.OnLostFocus(e);
+        UserInputProcessor.ProcessLostFocus();
+    }
+
     public float DetectDisplayScale()
     {
         // TODO: improve support for DPI scale detection
         // https://github.com/ScottPlot/ScottPlot/issues/2760
         return 1.0f;
+    }
+
+    public void SetCursor(Cursor cursor)
+    {
+        Cursor = cursor.GetCursor();
     }
 }

@@ -1,5 +1,4 @@
 namespace ScottPlotCookbook.Recipes.PlotTypes;
-
 public class PolarAxis : ICategory
 {
     public Chapter Chapter => Chapter.PlotTypes;
@@ -17,19 +16,18 @@ public class PolarAxis : ICategory
         public override void Execute()
         {
             // add a polar axis to the plot
-            var polarAxis = myPlot.Add.PolarAxis(radius: 100);
+            var polarAxis = myPlot.Add.PolarAxis();
 
             IColormap colormap = new ScottPlot.Colormaps.Turbo();
-            foreach (double fraction in ScottPlot.Generate.Range(0, 1, 0.02))
+            foreach (double degrees in ScottPlot.Generate.Range(0, 360, 10))
             {
                 // use the polar axis to get X/Y coordinates given a position in polar space
-                double radius = 100 * fraction;
-                double degrees = 360 * fraction;
+                double radius = degrees / 360.0;
                 Coordinates pt = polarAxis.GetCoordinates(radius, degrees);
 
                 // place markers or other plot types using X/Y coordinates like normal
                 var marker = myPlot.Add.Marker(pt);
-                marker.Color = colormap.GetColor(fraction);
+                marker.Color = colormap.GetColor(radius);
             }
         }
     }
@@ -42,15 +40,38 @@ public class PolarAxis : ICategory
         [Test]
         public override void Execute()
         {
-            var polarAxis = myPlot.Add.PolarAxis(radius: 100);
-            polarAxis.Rotation = Angle.FromDegrees(-90);
+            var polarAxis = myPlot.Add.PolarAxis();
+            polarAxis.Rotation = Angle.FromDegrees(90); // default direction is counter-clockwise
 
             IColormap colormap = new ScottPlot.Colormaps.Turbo();
-            foreach (double fraction in ScottPlot.Generate.Range(0, 1, 0.02))
+            foreach (double degrees in ScottPlot.Generate.Range(0, 360, 10))
             {
-                double radius = 100 * fraction;
-                double degrees = 360 * fraction;
+                double radius = degrees / 360.0;
                 Coordinates pt = polarAxis.GetCoordinates(radius, degrees);
+
+                var marker = myPlot.Add.Marker(pt);
+                marker.Color = colormap.GetColor(radius);
+            }
+        }
+    }
+
+    public class PolarClockwise : RecipeBase
+    {
+        public override string Name => "Clockwise Polar Axis";
+        public override string Description => "Clockwise polar plots are common for representing spatial orientation.";
+
+        [Test]
+        public override void Execute()
+        {
+            var polarAxis = myPlot.Add.PolarAxis();
+            polarAxis.Clockwise = true;
+            polarAxis.Rotation = Angle.FromDegrees(-90); // direction will be counter-clockwise
+
+            IColormap colormap = new ScottPlot.Colormaps.Turbo();
+            foreach (double degrees in ScottPlot.Generate.Range(0, 360, 10))
+            {
+                double fraction = degrees / 360.0;
+                Coordinates pt = polarAxis.GetCoordinates(fraction, degrees);
                 var marker = myPlot.Add.Marker(pt);
                 marker.Color = colormap.GetColor(fraction);
             }
@@ -73,7 +94,7 @@ public class PolarAxis : ICategory
                 new(30, Angle.FromDegrees(240)),
             ];
 
-            var polarAxis = myPlot.Add.PolarAxis(30);
+            var polarAxis = myPlot.Add.PolarAxis(radius: 30);
             polarAxis.Circles.ForEach(x => x.LinePattern = LinePattern.Dotted);
             polarAxis.Spokes.ForEach(x => x.LinePattern = LinePattern.Dotted);
 
@@ -231,6 +252,7 @@ public class PolarAxis : ICategory
         public override void Execute()
         {
             var polarAxis = myPlot.Add.PolarAxis();
+            polarAxis.Clockwise = true;
             polarAxis.Rotation = Angle.FromDegrees(-90);
 
             // add labeled spokes
@@ -242,7 +264,7 @@ public class PolarAxis : ICategory
             polarAxis.SetCircles(ticks);
 
             // convert radar values to coordinates
-            double[] values1 = { 5, 4, 5, 2, 3 };
+            double[] values1 = { 5, 4, 3, 2, 3 };
             double[] values2 = { 2, 3, 2, 4, 2 };
             Coordinates[] cs1 = polarAxis.GetCoordinates(values1);
             Coordinates[] cs2 = polarAxis.GetCoordinates(values2);
@@ -275,6 +297,42 @@ public class PolarAxis : ICategory
                 polarAxis.Spokes[i].LabelStyle.FontSize = 16;
                 polarAxis.Spokes[i].LabelPaddingFraction = 0.2 * i;
                 polarAxis.Spokes[i].LabelText = $"{polarAxis.Spokes[i].LabelLength}";
+            }
+        }
+    }
+
+    public class PolarWithLines : RecipeBase
+    {
+        public override string Name => "Polar Axis with Lines";
+        public override string Description => "This is an example of a polar axis with lines instead of points";
+
+        [Test]
+        public override void Execute()
+        {
+            // add a polar axis to the plot
+            var polarAxis = myPlot.Add.PolarAxis(radius: 100);
+
+            IColormap colormap = new ScottPlot.Colormaps.Turbo();
+            Coordinates? previousPt = null;
+
+            foreach (double fraction in ScottPlot.Generate.Range(0, 1, 0.02))
+            {
+                // use the polar axis to get X/Y coordinates given a position in polar space
+                double radius = 100 * fraction;
+                double degrees = 360 * fraction;
+                Coordinates pt = polarAxis.GetCoordinates(radius, degrees);
+
+                if (previousPt != null)
+                {
+                    ScottPlot.Plottables.LinePlot lp = myPlot.Add.Line(previousPt.Value.X, previousPt.Value.Y, pt.X, pt.Y);
+                    lp.LineWidth = 5;
+                    lp.Color = Colors.Red;
+                    previousPt = pt;
+                }
+                else
+                {
+                    previousPt = pt;
+                }
             }
         }
     }

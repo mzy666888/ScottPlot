@@ -75,8 +75,8 @@ public class Styling : ICategory
     {
         public override string Name => "Palettes";
         public override string Description => "A palette is a set of colors, and the Plot's palette " +
-            "defines the default colors to use when adding new plottables. ScottPlot comes with many " +
-            "standard palettes, but users may also create their own.";
+            "defines the default colors to use when adding new plottables. " +
+            "https://scottplot.net/cookbook/5.0/palettes/ displays all palettes included with ScottPlot.";
 
         [Test]
         public override void Execute()
@@ -90,6 +90,90 @@ public class Styling : ICategory
                 var sig = myPlot.Add.Signal(data);
                 sig.LineWidth = 3;
             }
+        }
+    }
+
+    public class PaletteInvert : RecipeBase
+    {
+        public override string Name => "Inverted Palettes";
+        public override string Description => "Palettes can be inverted. " +
+            "Palettes that work well on light backgrounds typically work well " +
+            "on dark backgrounds if they are inverted.";
+
+        [Test]
+        public override void Execute()
+        {
+            var palette1 = new ScottPlot.Palettes.ColorblindFriendly();
+            var palette2 = palette1.Inverted();
+            var palette3 = palette1.InvertedHue();
+
+            for (int x = 0; x < palette1.Count(); x++)
+            {
+                CoordinateRect rect1 = CoordinateRect.UnitSquare.WithTranslation(x, 4);
+                CoordinateRect rect2 = CoordinateRect.UnitSquare.WithTranslation(x, 2);
+                CoordinateRect rect3 = CoordinateRect.UnitSquare.WithTranslation(x, 0);
+                var shape1 = myPlot.Add.Rectangle(rect1);
+                var shape2 = myPlot.Add.Rectangle(rect2);
+                var shape3 = myPlot.Add.Rectangle(rect3);
+
+                // set color using the palette
+                shape1.FillColor = palette1.Colors[x];
+                shape2.FillColor = palette2.Colors[x];
+                shape3.FillColor = palette3.Colors[x];
+
+                shape1.LineColor = shape1.FillColor;
+                shape2.LineColor = shape2.FillColor;
+                shape3.LineColor = shape3.FillColor;
+
+            }
+
+            myPlot.Add.Text("Standard", 0, 5.5);
+            myPlot.Add.Text("Inverted", 0, 3.5);
+            myPlot.Add.Text("Inverted Hue", 0, 1.5);
+            myPlot.HideGrid();
+        }
+    }
+
+    public class Colormaps : RecipeBase
+    {
+        public override string Name => "Colormaps";
+        public override string Description => "A colormap is a continuous gradient of multiple colors. " +
+            "It can be used to color continuous data like heatmaps and images, but colormaps may also " +
+            "be sampled directly to create collections of colors. " +
+            "https://scottplot.net/cookbook/5.0/colormaps/ displays all colormaps included with ScottPlot.";
+
+        [Test]
+        public override void Execute()
+        {
+            var colormap1 = new ScottPlot.Colormaps.Viridis();
+            var colormap2 = colormap1.Invert();
+            var colormap3 = colormap1.InvertHue();
+
+            int steps = 20;
+            for (int x = 0; x < steps; x++)
+            {
+                CoordinateRect rect1 = CoordinateRect.UnitSquare.WithTranslation(x, 4);
+                CoordinateRect rect2 = CoordinateRect.UnitSquare.WithTranslation(x, 2);
+                CoordinateRect rect3 = CoordinateRect.UnitSquare.WithTranslation(x, 0);
+                var shape1 = myPlot.Add.Rectangle(rect1);
+                var shape2 = myPlot.Add.Rectangle(rect2);
+                var shape3 = myPlot.Add.Rectangle(rect3);
+
+                // set color using the colormap
+                double fraction = (double)x / (steps - 1);
+                shape1.FillColor = colormap1.GetColor(fraction);
+                shape2.FillColor = colormap2.GetColor(fraction);
+                shape3.FillColor = colormap3.GetColor(fraction);
+
+                shape1.LineColor = shape1.FillColor;
+                shape2.LineColor = shape2.FillColor;
+                shape3.LineColor = shape3.FillColor;
+            }
+
+            myPlot.Add.Text("Standard", 0, 5.5);
+            myPlot.Add.Text("Inverted", 0, 3.5);
+            myPlot.Add.Text("Inverted Hue", 0, 1.5);
+            myPlot.HideGrid();
         }
     }
 
@@ -349,6 +433,128 @@ public class Styling : ICategory
             myPlot.Add.Signal(Generate.Sin(51, mult: 1e9));
             myPlot.Title("This title is centered in the figure");
             myPlot.Axes.Title.FullFigureCenter = true;
+        }
+    }
+
+    public class PlotBorder : RecipeBase
+    {
+        public override string Name => "Plot Border";
+        public override string Description => "Plots can be assigned borders to draw around the figure or data area.";
+
+        [Test]
+        public override void Execute()
+        {
+            myPlot.Add.Signal(Generate.Sin());
+            myPlot.Add.Signal(Generate.Cos());
+
+            myPlot.FigureBorder = new()
+            {
+                Color = Colors.Magenta,
+                Width = 3,
+                Pattern = LinePattern.Dotted,
+            };
+
+            myPlot.DataBorder = new()
+            {
+                Color = Colors.Green,
+                Width = 3,
+                Pattern = LinePattern.DenselyDashed,
+            };
+
+            // the hide axis frame lines so our custom border is the only one
+            myPlot.Axes.Frame(false);
+        }
+    }
+
+    public class SetFontName : RecipeBase
+    {
+        public override string Name => "Set Font by Name";
+        public override string Description => "Set font by its name to apply it to common plot components.";
+
+        [Test]
+        public override void Execute()
+        {
+            myPlot.Font.Set("Comic Sans MS");
+            myPlot.Title("Hello, World");
+            var sig = myPlot.Add.Signal(Generate.Sin(51, mult: 1e6));
+            sig.LegendText = "Hello, Custom Font";
+        }
+    }
+
+    public class SetFontWeight : RecipeBase
+    {
+        public override string Name => "Set Font Weight";
+        public override string Description => "Font weight can be customized.";
+
+        [Test]
+        public override void Execute()
+        {
+            myPlot.Font.Set("Calibri"); // apply to many existing plot labels
+            myPlot.Title("Hello, World");
+
+            FontWeight[] weights = [FontWeight.Light, FontWeight.Normal,
+                FontWeight.SemiBold, FontWeight.Bold, FontWeight.ExtraBlack];
+
+            for (int i = 0; i < weights.Length; i++)
+            {
+                FontWeight weight = weights[i];
+                myPlot.Font.Set("Calibri", weight: weight); // apply to new labels
+                var text = myPlot.Add.Text($"FontWeight.{weight}", 0, i);
+                text.LabelFontSize = 24;
+            }
+
+            myPlot.Axes.SetLimits(-1, 5, -2, weights.Length);
+            myPlot.HideGrid();
+        }
+    }
+
+    public class SetFontSlant : RecipeBase
+    {
+        public override string Name => "Set Font Slant";
+        public override string Description => "Font slant can be customized.";
+
+        [Test]
+        public override void Execute()
+        {
+            myPlot.Font.Set("Calibri", slant: FontSlant.Italic); // apply to many existing plot labels
+            myPlot.Title("Hello, World");
+
+            FontSlant[] slants = [FontSlant.Upright, FontSlant.Italic, FontSlant.Oblique];
+
+            for (int i = 0; i < slants.Length; i++)
+            {
+                FontSlant slant = slants[i];
+                myPlot.Font.Set("Calibri", slant: slant); // apply to new labels
+                var text = myPlot.Add.Text($"FontSlant.{slant}", 0, i);
+                text.LabelFontSize = 24;
+            }
+
+            myPlot.Axes.SetLimits(-1, 5, -1, slants.Length);
+            myPlot.HideGrid();
+        }
+    }
+
+    public class SetFontUnderline : RecipeBase
+    {
+        public override string Name => "Set Label Underline";
+        public override string Description => "Underlines may be added to label styles. " +
+            "Underline thickness and offset may be customized as well.";
+
+        [Test]
+        public override void Execute()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                var text = myPlot.Add.Text($"Underline {i}px", i / 5.0, i);
+                text.LabelFontSize = 24;
+                text.LabelFontColor = ScottPlot.Palette.Default.GetColor(i);
+                text.LabelUnderline = true;
+                text.LabelUnderlineWidth = i;
+                text.LabelUnderlineOffset = 2 + i / 2;
+            }
+
+            myPlot.Axes.SetLimits(-1, 5, -1, 4);
+            myPlot.HideGrid();
         }
     }
 }

@@ -1,7 +1,8 @@
-using Windows.System;
-using Windows.Foundation;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
+using System;
+using Windows.Foundation;
+using Windows.System;
 
 namespace ScottPlot.WinUI;
 
@@ -23,6 +24,8 @@ internal static class WinUIPlotExtensions
     internal static void ProcessMouseDown(this Interactivity.UserInputProcessor processor, WinUIPlot plotControl, PointerRoutedEventArgs e)
     {
         Pixel pixel = e.Pixel(plotControl);
+        UpdateKeyStateFromModifiers(processor.KeyState, e.KeyModifiers);
+
         PointerUpdateKind kind = e.GetCurrentPoint(plotControl).Properties.PointerUpdateKind;
         Interactivity.IUserAction action = kind switch
         {
@@ -37,6 +40,8 @@ internal static class WinUIPlotExtensions
     internal static void ProcessMouseUp(this Interactivity.UserInputProcessor processor, WinUIPlot plotControl, PointerRoutedEventArgs e)
     {
         Pixel pixel = e.Pixel(plotControl);
+        UpdateKeyStateFromModifiers(processor.KeyState, e.KeyModifiers);
+
         PointerUpdateKind kind = e.GetCurrentPoint(plotControl).Properties.PointerUpdateKind;
         Interactivity.IUserAction action = kind switch
         {
@@ -51,6 +56,8 @@ internal static class WinUIPlotExtensions
     internal static void ProcessMouseMove(this Interactivity.UserInputProcessor processor, WinUIPlot plotControl, PointerRoutedEventArgs e)
     {
         Pixel pixel = e.Pixel(plotControl);
+        UpdateKeyStateFromModifiers(processor.KeyState, e.KeyModifiers);
+
         Interactivity.IUserAction action = new Interactivity.UserActions.MouseMove(pixel);
         processor.Process(action);
     }
@@ -58,6 +65,7 @@ internal static class WinUIPlotExtensions
     internal static void ProcessMouseWheel(this Interactivity.UserInputProcessor processor, WinUIPlot plotControl, PointerRoutedEventArgs e)
     {
         Pixel pixel = e.Pixel(plotControl);
+        UpdateKeyStateFromModifiers(processor.KeyState, e.KeyModifiers);
 
         Interactivity.IUserAction action = e.GetCurrentPoint(plotControl).Properties.MouseWheelDelta > 0
             ? new Interactivity.UserActions.MouseWheelUp(pixel)
@@ -96,6 +104,39 @@ internal static class WinUIPlotExtensions
             VirtualKey.LeftShift => Interactivity.StandardKeys.Shift,
             VirtualKey.RightShift => Interactivity.StandardKeys.Shift,
             _ => new Interactivity.Key(e.Key.ToString()),
+        };
+    }
+
+    /// <summary>
+    /// Updates KeyState with modifier keys from VirtualKeyModifiers
+    /// </summary>
+    private static void UpdateKeyStateFromModifiers(Interactivity.KeyboardState keyState, VirtualKeyModifiers keyModifiers)
+    {
+        keyState.Reset();
+
+        if (keyModifiers.HasFlag(VirtualKeyModifiers.Control))
+            keyState.Add(Interactivity.StandardKeys.Control);
+
+        if (keyModifiers.HasFlag(VirtualKeyModifiers.Shift))
+            keyState.Add(Interactivity.StandardKeys.Shift);
+
+        if (keyModifiers.HasFlag(VirtualKeyModifiers.Menu))
+            keyState.Add(Interactivity.StandardKeys.Alt);
+    }
+
+    public static InputSystemCursorShape GetCursor(this Cursor cursor)
+    {
+        return cursor switch
+        {
+            Cursor.Arrow => InputSystemCursorShape.Arrow,
+            Cursor.No => InputSystemCursorShape.UniversalNo,
+            Cursor.Wait => InputSystemCursorShape.Wait,
+            Cursor.Hand => InputSystemCursorShape.Hand,
+            Cursor.Cross => InputSystemCursorShape.Cross,
+            Cursor.SizeAll => InputSystemCursorShape.SizeAll,
+            Cursor.SizeNorthSouth => InputSystemCursorShape.SizeNorthSouth,
+            Cursor.SizeWestEast => InputSystemCursorShape.SizeWestEast,
+            _ => throw new NotImplementedException(cursor.ToString()),
         };
     }
 }

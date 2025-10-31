@@ -2,16 +2,18 @@ namespace ScottPlot.LegendLayouts;
 
 public class Wrapping : ILegendLayout
 {
-    public LegendLayout GetLayout(Legend legend, LegendItem[] items, PixelSize maxSize)
+    public LegendLayout GetLayout(Legend legend, LegendItem[] items, PixelSize maxSize, Paint paint)
     {
-        using SKPaint paint = new();
         PixelSize maxSizeAfterPadding = maxSize.Contracted(legend.Padding);
         PixelRect maxRectAfterPadding = new(0, maxSizeAfterPadding.Width, maxSizeAfterPadding.Height, 0);
         PixelSize[] labelSizes = items.Select(x => x.LabelStyle.Measure(x.LabelText, paint).Size).ToArray();
         float maxLabelWidth = labelSizes.Select(x => x.Width).Max();
         float maxLabelHeight = labelSizes.Select(x => x.Height).Max();
-        float maxItemWidth = legend.SymbolWidth + legend.SymbolPadding + maxLabelWidth;
-        float maxItemHeight = maxLabelHeight;
+        float maxMarkerSize = items.Select(x => x.MarkerStyle.Size).DefaultIfEmpty(0).Max();
+        float maxItemSymbolWidth = Math.Max(legend.SymbolWidth, maxMarkerSize);
+        float maxItemSymbolHeight = Math.Max(legend.SymbolHeight, maxMarkerSize);
+        float maxItemWidth = maxItemSymbolWidth + legend.SymbolPadding + maxLabelWidth;
+        float maxItemHeight = Math.Max(maxLabelHeight, maxItemSymbolHeight);
 
         PixelRect[] labelRects = new PixelRect[items.Length];
         PixelRect[] symbolRects = new PixelRect[items.Length];
@@ -43,9 +45,10 @@ public class Wrapping : ILegendLayout
             PixelRect itemRect = new(nextPixel, new PixelSize(itemWidth, maxItemHeight));
             itemRect = itemRect.Intersect(maxRectAfterPadding);
 
-            symbolRects[i] = new(itemRect.Left, itemRect.Left + legend.SymbolWidth, itemRect.Bottom, itemRect.Top);
+            float thisSymbolWidth = Math.Max(legend.SymbolWidth, items[i].MarkerStyle.Size);
+            symbolRects[i] = new(itemRect.Left, itemRect.Left + thisSymbolWidth, itemRect.Bottom, itemRect.Top);
             labelRects[i] = new(
-                left: itemRect.Left + legend.SymbolWidth + legend.SymbolPadding,
+                left: itemRect.Left + thisSymbolWidth + legend.SymbolPadding,
                 right: itemRect.Right,
                 bottom: itemRect.Bottom,
                 top: itemRect.Top);

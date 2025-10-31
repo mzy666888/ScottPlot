@@ -23,6 +23,14 @@ public readonly struct Color
         }
     }
 
+    public double Opacity
+    {
+        get
+        {
+            return (Alpha / 255.0);
+        }
+    }
+
     public uint PremultipliedARGB
     {
         get
@@ -309,7 +317,37 @@ public readonly struct Color
     /// </summary>
     public static Color FromHSL(float hue, float saturation, float luminosity, float alpha = 1)
     {
-        // adapted from Microsoft.Maui.Graphics/Color.cs (MIT license)
+        // adapted from Microsoft.Maui.Graphics/Color.cs
+
+        /*
+        --- NOTICE BEGIN ---
+
+        The MIT License (MIT)
+
+        Copyright (c) .NET Foundation and Contributors
+
+        All rights reserved.
+
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+
+        --- NOTICE END ---
+        */
 
         if (luminosity == 0)
         {
@@ -394,6 +432,19 @@ public readonly struct Color
         byte g = DarkenByte(G, fraction);
         byte b = DarkenByte(B, fraction);
         return new Color(r, g, b, Alpha);
+    }
+
+    public Color Inverted()
+    {
+        return new Color(
+            (byte)(255 - R),
+            (byte)(255 - G),
+            (byte)(255 - B));
+    }
+
+    public Color InvertedHue()
+    {
+        return Color.FromHSL(Hue + .5f, Saturation, Luminance);
     }
 
     /// <summary>

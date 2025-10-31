@@ -6,11 +6,22 @@ namespace ScottPlot;
 /// </summary>
 public class FontStyle
 {
-    public SKTypeface Typeface => Fonts.GetTypeface(Name, Bold, Italic);
-
+    public SKTypeface Typeface => Fonts.GetTypeface(Name, Weight, Slant, Width);
     public string Name { get; set; } = Fonts.Default;
-    public bool Bold { get; set; } = false;
-    public bool Italic { get; set; } = false;
+    public FontWeight Weight { get; set; } = Fonts.DefaultWeight ?? FontWeight.Normal;
+    public FontSlant Slant { get; set; } = Fonts.DefaultSlant ?? FontSlant.Upright;
+    public FontSpacing Width { get; set; } = Fonts.DefaultWidth ?? FontSpacing.Normal;
+
+    public bool Bold
+    {
+        get => Weight == FontWeight.Bold;
+        set => Weight = value ? FontWeight.Bold : FontWeight.Normal;
+    }
+    public bool Italic
+    {
+        get => Slant == FontSlant.Italic;
+        set => Slant = value ? FontSlant.Italic : FontSlant.Upright;
+    }
 
     // TODO: consider whether color really belongs here...
     public Color Color { get; set; } = Colors.Black;
@@ -53,18 +64,20 @@ public class FontStyle
             Color = Color,
             Size = Size,
             AntiAlias = AntiAlias,
+            Weight = Weight,
+            Slant = Slant,
+            Width = Width,
         };
     }
 
-    public void ApplyToPaint(SKPaint paint)
+    public void ApplyToPaint(Paint paint)
     {
-        paint.Shader = null;
+        paint.SKShader = null;
         paint.IsStroke = false;
-        paint.Typeface = Typeface;
+        paint.SKTypeface = Typeface;
         paint.TextSize = Size;
-        paint.Color = Color.ToSKColor();
+        paint.Color = Color;
         paint.IsAntialias = AntiAlias;
-        paint.FakeBoldText = Bold;
+        paint.Bold = Bold;
     }
-
 }

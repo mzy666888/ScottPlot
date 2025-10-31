@@ -1,6 +1,7 @@
 using ScottPlot.DataSources;
 using ScottPlot.Panels;
 using ScottPlot.Plottables;
+using ScottPlot.Plottables.Interactive;
 using ScottPlot.Statistics;
 
 namespace ScottPlot;
@@ -701,6 +702,94 @@ public class PlottableAdder(Plot plot)
         return marker;
     }
 
+    public InteractiveHorizontalLine InteractiveHorizontalLine(double y)
+    {
+        InteractiveHorizontalLine plottable = new() { Y = y };
+        plottable.LineStyle.Color = GetNextColor();
+        Plot.PlottableList.Add(plottable);
+        return plottable;
+    }
+
+    public InteractiveHorizontalLineSegment InteractiveHorizontalLineSegment(double x1, double x2, double y)
+    {
+        InteractiveHorizontalLineSegment plottable = new()
+        {
+            X1 = x1,
+            X2 = x2,
+            Y = y,
+        };
+        plottable.LineStyle.Color = GetNextColor();
+        Plot.PlottableList.Add(plottable);
+        return plottable;
+    }
+
+    public InteractiveHorizontalSpan InteractiveHorizontalSpan(double x1, double x2)
+    {
+        InteractiveHorizontalSpan plottable = new() { X1 = x1, X2 = x2 };
+        plottable.LineStyle.Color = GetNextColor();
+        plottable.FillStyle.Color = plottable.LineStyle.Color.WithOpacity(.2);
+        Plot.PlottableList.Add(plottable);
+        return plottable;
+    }
+
+    public InteractiveLineSegment InteractiveLineSegment(CoordinateLine line)
+    {
+        InteractiveLineSegment plottable = new()
+        {
+            Line = line,
+            Color = GetNextColor(),
+        };
+        Plot.PlottableList.Add(plottable);
+        return plottable;
+    }
+
+    public InteractiveMarker InteractiveMarker(Coordinates point)
+    {
+        InteractiveMarker plottable = new() { Point = point };
+        plottable.MarkerStyle.MarkerColor = GetNextColor();
+        Plot.PlottableList.Add(plottable);
+        return plottable;
+    }
+
+    public InteractiveRectangle InteractiveRectangle(CoordinateRect rect)
+    {
+        InteractiveRectangle plottable = new() { Rect = rect };
+        plottable.LineStyle.Color = GetNextColor();
+        plottable.FillStyle.Color = plottable.LineStyle.Color.WithAlpha(.2);
+        Plot.PlottableList.Add(plottable);
+        return plottable;
+    }
+
+    public InteractiveVerticalLine InteractiveVerticalLine(double x)
+    {
+        InteractiveVerticalLine plottable = new() { X = x };
+        plottable.LineStyle.Color = GetNextColor();
+        Plot.PlottableList.Add(plottable);
+        return plottable;
+    }
+
+    public InteractiveVerticalLineSegment InteractiveVerticalLineSegment(double x, double y1, double y2)
+    {
+        InteractiveVerticalLineSegment plottable = new()
+        {
+            X = x,
+            Y1 = y1,
+            Y2 = y2,
+        };
+        plottable.LineStyle.Color = GetNextColor();
+        Plot.PlottableList.Add(plottable);
+        return plottable;
+    }
+
+    public InteractiveVerticalSpan InteractiveVerticalSpan(double y1, double y2)
+    {
+        InteractiveVerticalSpan plottable = new() { Y1 = y1, Y2 = y2 };
+        plottable.LineStyle.Color = GetNextColor();
+        plottable.FillStyle.Color = plottable.LineStyle.Color.WithOpacity(.2);
+        Plot.PlottableList.Add(plottable);
+        return plottable;
+    }
+
     public Legend Legend()
     {
         Legend legend = new(Plot) { IsVisible = true };
@@ -915,11 +1004,11 @@ public class PlottableAdder(Plot plot)
         return plottable;
     }
 
-    public PolarAxis PolarAxis(double radius = 1.0, double spokeLength = 1.1)
+    public PolarAxis PolarAxis(double radius = 1.0, double spokeLength = 1.1, int circleCount = 5, int spokeCount = 12)
     {
-        PolarAxis polarAxis = new() { };
-        polarAxis.SetCircles(radius, 5);
-        polarAxis.SetSpokes(12, radius * spokeLength);
+        PolarAxis polarAxis = new();
+        polarAxis.SetCircles(radius, circleCount);
+        polarAxis.SetSpokes(spokeCount, radius * spokeLength);
 
         Plot.PlottableList.Add(polarAxis);
         Plot.HideAxesAndGrid();

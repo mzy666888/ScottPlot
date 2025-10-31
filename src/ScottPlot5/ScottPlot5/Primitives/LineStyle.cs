@@ -89,7 +89,7 @@ public class LineStyle
         }
     }
 
-    public void Render(SKCanvas canvas, Pixel[] starts, Pixel[] ends, SKPaint paint)
+    public void Render(SKCanvas canvas, Pixel[] starts, Pixel[] ends, Paint paint)
     {
         if (starts.Length != ends.Length)
             throw new ArgumentException($"{nameof(starts)} and {nameof(ends)} must have equal length");
@@ -105,7 +105,7 @@ public class LineStyle
         Drawing.DrawPath(canvas, paint, path, this);
     }
 
-    public void Render(SKCanvas canvas, PixelLine[] lines, SKPaint paint)
+    public void Render(SKCanvas canvas, PixelLine[] lines, Paint paint)
     {
         using SKPath path = new();
 
@@ -118,7 +118,12 @@ public class LineStyle
         Drawing.DrawPath(canvas, paint, path, this);
     }
 
-    public void Render(SKCanvas canvas, PixelLine line, SKPaint paint)
+    public void Render(RenderPack rp, PixelLine line)
+    {
+        Render(rp.Canvas, line, rp.Paint);
+    }
+
+    public void Render(SKCanvas canvas, PixelLine line, Paint paint)
     {
         if (!IsVisible)
             return;
@@ -126,10 +131,18 @@ public class LineStyle
         Drawing.DrawLine(canvas, paint, line, this);
     }
 
-    public void Render(SKCanvas canvas, PixelRect rect, SKPaint paint)
+    public void Render(RenderPack rp, PixelRect rect)
+    {
+        Render(rp.Canvas, rect, rp.Paint);
+    }
+
+    public void Render(SKCanvas canvas, PixelRect rect, Paint paint, bool contract = false)
     {
         if (!IsVisible)
             return;
+
+        if (contract)
+            rect = rect.Contract(Width / 2);
 
         Pixel[] pixels =
         [
@@ -143,7 +156,7 @@ public class LineStyle
         Drawing.DrawLines(canvas, paint, pixels, this);
     }
 
-    public void Render(SKCanvas canvas, SKPath path, SKPaint paint)
+    public void Render(SKCanvas canvas, SKPath path, Paint paint)
     {
         if (!IsVisible)
             return;
@@ -152,7 +165,7 @@ public class LineStyle
     }
 
     [Obsolete("use the overload where the paint is passed last")]
-    public void Render(SKCanvas canvas, SKPaint paint, PixelLine line)
+    public void Render(SKCanvas canvas, Paint paint, PixelLine line)
     {
         if (!IsVisible)
             return;
@@ -160,17 +173,18 @@ public class LineStyle
         Drawing.DrawLine(canvas, paint, line, this);
     }
 
-    public void ApplyToPaint(SKPaint paint)
+    public void ApplyToPaint(Paint paint)
     {
-        paint.Shader = null;
+        paint.SKShader = null;
         paint.IsStroke = true;
-        paint.Color = Color.ToSKColor();
+        paint.Color = Color;
         paint.StrokeWidth = Hairline ? 1 : Width;
-        paint.PathEffect = Pattern.GetPathEffect();
+        paint.SKPathEffect = Pattern.GetPathEffect();
         paint.IsAntialias = AntiAlias;
-        paint.StrokeCap = StrokeCap;
-        paint.StrokeJoin = StrokeJoin;
+        paint.SKStrokeCap = StrokeCap;
+        paint.SKStrokeJoin = StrokeJoin;
         paint.StrokeMiter = StrokeMiter;
+        paint.SKPaintStyle = SKPaintStyle.Stroke;
 
         if (HandDrawn)
         {
@@ -178,13 +192,13 @@ public class LineStyle
             //     Creates a "jitter" path effect by chopping a path into discrete segments, and
             //     randomly displacing them.
             SKPathEffect handDrawnEffect = SKPathEffect.CreateDiscrete((float)HandDrawnSegmentLength, (float)HandDrawnJitter);
-            if (paint.PathEffect is null)
+            if (paint.SKPathEffect is null)
             {
-                paint.PathEffect = handDrawnEffect;
+                paint.SKPathEffect = handDrawnEffect;
             }
             else
             {
-                paint.PathEffect = SKPathEffect.CreateCompose(paint.PathEffect, handDrawnEffect);
+                paint.SKPathEffect = SKPathEffect.CreateCompose(paint.SKPathEffect, handDrawnEffect);
             }
         }
     }

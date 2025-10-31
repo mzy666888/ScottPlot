@@ -31,11 +31,17 @@ public class VerticalLine : AxisLine
 
     public override void Render(RenderPack rp)
     {
-        if (!IsVisible || !Axes.XAxis.Range.Contains(X))
+        if (!IsVisible)
             return;
 
-        Coordinates pt1 = new(X, Math.Max(Minimum, Axes.YAxis.Min));
-        Coordinates pt2 = new(X, Math.Min(Maximum, Axes.YAxis.Max));
+        if (!Axes.XAxis.Range.Contains(X))
+            return;
+
+        double y1 = Math.Max(Minimum, Math.Min(Axes.YAxis.Min, Axes.YAxis.Max));
+        double y2 = Math.Min(Maximum, Math.Max(Axes.YAxis.Min, Axes.YAxis.Max));
+        Coordinates pt1 = new(X, y1);
+        Coordinates pt2 = new(X, y2);
+
         CoordinateLine line = new(pt1, pt2);
         PixelLine pxLine = Axes.GetPixelLine(line);
         LineStyle.Render(rp.Canvas, pxLine, rp.Paint);
@@ -66,7 +72,6 @@ public class VerticalLine : AxisLine
         // draw label outside the data area
         rp.CanvasState.DisableClipping();
 
-        using SKPaint paint = new();
-        LabelStyle.Render(rp.Canvas, new Pixel(x, y), paint);
+        LabelStyle.Render(rp.Canvas, new Pixel(x, y), rp.Paint);
     }
 }

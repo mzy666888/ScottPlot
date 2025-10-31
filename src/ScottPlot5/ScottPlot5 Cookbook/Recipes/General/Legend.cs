@@ -49,7 +49,7 @@ public class Legend : ICategory
     public class ManualLegend : RecipeBase
     {
         public override string Name => "Manual Legend Items";
-        public override string Description => "Legends may be constructed manually.";
+        public override string Description => "Legends may be constructed manually and markers customized.";
 
         [Test]
         public override void Execute()
@@ -63,6 +63,7 @@ public class Legend : ICategory
                 LineColor = Colors.Magenta,
                 MarkerFillColor = Colors.Magenta,
                 MarkerLineColor = Colors.Magenta,
+                MarkerShape = MarkerShape.Cross,
                 LineWidth = 2,
                 LabelText = "Alpha"
             };
@@ -106,8 +107,47 @@ public class Legend : ICategory
             myPlot.Legend.ShadowColor = Colors.Blue.WithOpacity(.2);
             myPlot.Legend.ShadowOffset = new(10, 10);
 
-            myPlot.Legend.FontSize = 32;
+            myPlot.Legend.FontSize = 22;
             myPlot.Legend.FontName = Fonts.Serif;
+        }
+    }
+
+    public class LegendOverrideSymbol : RecipeBase
+    {
+        public override string Name => "Legend Marker Shape Override";
+        public override string Description => "Use the legend shape override " +
+            "to force all legend items to display using the given marker shape.";
+
+        [Test]
+        public override void Execute()
+        {
+            // this shape will be used for legend items without defined markers
+            myPlot.Legend.MarkerShapeOverride = MarkerShape.FilledCircle;
+
+            var sig1 = myPlot.Add.Signal(Generate.Sin(51));
+            sig1.LegendText = "Sin";
+
+            var sig2 = myPlot.Add.Signal(Generate.Cos(51));
+            sig2.LegendText = "Cos";
+
+            LegendItem item1 = new()
+            {
+                MarkerColor = Colors.Red,
+                MarkerShape = MarkerShape.Cross,
+                LabelText = "Alpha"
+            };
+
+            LegendItem item2 = new()
+            {
+                MarkerColor = Colors.Green,
+                MarkerShape = MarkerShape.FilledSquare,
+                LabelText = "Beta"
+            };
+
+            myPlot.Legend.ManualItems.Add(item1);
+            myPlot.Legend.ManualItems.Add(item2);
+
+            myPlot.ShowLegend();
         }
     }
 
@@ -256,6 +296,37 @@ public class Legend : ICategory
                 LineWidth = 2,
                 LineColor = Colors.Magenta,
             });
+        }
+    }
+
+    public class LegendTitle : RecipeBase
+    {
+        public override string Name => "Legend with Title";
+        public override string Description => "Place a manual legend item at the top of the list " +
+            "and style it as desired to achieve a title inside the legend area.";
+
+        [Test]
+        public override void Execute()
+        {
+            var sig1 = myPlot.Add.Signal(Generate.Sin(51));
+            sig1.LegendText = "Sine Wave";
+
+            var sig2 = myPlot.Add.Signal(Generate.Cos(51));
+            sig2.LegendText = "Cosine Wave";
+
+            var sig3 = myPlot.Add.Signal(Generate.Sin(51, 2));
+            sig3.LegendText = "High Frequency";
+
+            LegendItem legendTitle = new()
+            {
+                LabelText = "Math Functions",
+                LabelFontSize = 14,
+                LabelFontColor = Colors.Navy,
+                LabelBold = true,
+                LabelOffsetX = -20, // compensate for space used to display shape
+            };
+
+            myPlot.Legend.ManualItems.Add(legendTitle);
         }
     }
 }
