@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
@@ -18,7 +18,7 @@
 		<!--<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>-->
 
 		<!-- NuGet info-->
-		<PackageId>ScottPlot.MauiMvvm</PackageId>
+		<PackageId>ScottPlotMauiMvvm</PackageId>
 		<Version>5.1.58</Version>
 	</PropertyGroup>
 
