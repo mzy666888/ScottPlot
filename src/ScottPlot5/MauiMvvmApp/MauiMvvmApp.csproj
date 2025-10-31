@@ -64,12 +64,11 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0-preview.5.25277.114" />
-		<PackageReference Include="MPowerKit.Navigation" Version="1.4.4" />
+		<PackageReference Include="MPowerKit.Navigation" Version="1.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\ScottPlot5 Controls\ScottPlot.MauiMvvm\ScottPlot.MauiMvvm.csproj" />
-	  <ProjectReference Include="..\ScottPlot5 Controls\ScottPlot.Maui\ScottPlot.Maui.csproj" />
 	</ItemGroup>
 
 </Project>

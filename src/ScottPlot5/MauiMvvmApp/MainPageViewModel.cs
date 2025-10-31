@@ -25,10 +25,17 @@ internal partial class MainPageViewModel:ObservableObject
     [ObservableProperty]
     public partial string Title { get; set; } = "Hello, Maui MVVM!";
 
+    [ObservableProperty]
+    public partial int Count { get; set; }
+
+    [ObservableProperty]
+    public partial string ButtonText { get; set; } = "Click Me";
+
     [RelayCommand]
     private void Click()
     {
         Title = $"Clicked at {DateTime.Now:HH:mm:ss}";
+        ButtonText = $"Clicked {++Count} time(s)";
     }
 
 }
